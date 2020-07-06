@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getscanner/history_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'constants.dart';
@@ -56,11 +58,40 @@ class _ScannerScreenState extends State<ScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(
-              child: Text(
+          centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.black),
+          title: Text(
             'Scanner',
             style: scannerStyle,
-          )),
+          ),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: Center(
+                    child: Text(
+                  "Scanner",
+                  style: scannerStyle.copyWith(fontSize: 20),
+                )),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: <Color>[
+                  Theme.of(context).primaryColor,
+                  Color(0xffa3f7bf)
+                ])),
+              ),
+              DrawerItem(title: "History",
+              navigate: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return History();
+                }));
+              },
+              ),
+              DrawerItem(title: "Face Scanner"),
+              DrawerItem(title: "Barcode Scanner"),
+              DrawerItem(title: "Label Scanner",)
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: Theme.of(context).primaryColor,
@@ -76,7 +107,44 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   style: scannerStyle,
                 ),
               )
-            : ScannedItems(items: visionText,labels: label)
+            : ScannedItems(items: visionText, labels: label));
+  }
+}
+
+class DrawerItem extends StatelessWidget {
+  final title;
+  final Function navigate;
+  DrawerItem({this.title,this.navigate});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 10.0),
+      child: InkWell(
+        onTap: navigate,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(Icons.history),
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  Text(
+                    title,
+                    style: scannerStyle.copyWith(fontSize: 20),
+                  )
+                ],
+              ),
+              Icon(Icons.arrow_right)
+            ],
+          ),
+        ),
+        splashColor: Theme.of(context).primaryColor,
+      ),
     );
   }
 }
