@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title:"Scanner" ,
       debugShowCheckedModeBanner: false,
       theme: Theme.of(context).copyWith(
        primaryColor: Color(0xff05dfd7),

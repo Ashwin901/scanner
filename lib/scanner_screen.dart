@@ -5,11 +5,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'constants.dart';
 import 'process.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScannerScreen extends StatefulWidget {
   @override
   _ScannerScreenState createState() => _ScannerScreenState();
 }
+
+final fireStore = Firestore.instance;
 
 class _ScannerScreenState extends State<ScannerScreen> {
   TextRecognizer textRecognizer;
@@ -17,6 +20,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   RegExp urlExp;
   RegExp phoneExp;
   List<String> label;
+  List value;
 
   @override
   void initState() {
@@ -27,12 +31,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
     phoneExp =
         RegExp(r"^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$", caseSensitive: false);
     label = [];
+    value=[];
     super.initState();
   }
 
 //  This function accepts the image and scans it and separates url,phoneNumber and other types of text.
   void getData() async {
     label.clear();
+    value.clear();
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(imageFile);
     VisionText visionText1 = await textRecognizer.processImage(visionImage);
@@ -45,12 +51,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
         } else {
           label.add("Other :");
         }
+       value.add(visionText1.blocks[i].text);
       });
     }
-    if (mounted) {
-      setState(() {
-        visionText = visionText1;
-      });
+ storeData(value,label);
+  }
+
+  void storeData(List value, List label){
+    for(int i=0;i<value.length;i++){
+      if(label[i] == "URL :" || label[i] == "Phone Number :"){
+        fireStore.collection("items").add({
+          "label":label[i],
+          "value":value[i]
+        });
+      }
     }
   }
 
@@ -87,9 +101,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 }));
               },
               ),
-              DrawerItem(title: "Face Scanner"),
-              DrawerItem(title: "Barcode Scanner"),
-              DrawerItem(title: "Label Scanner",)
             ],
           ),
         ),
@@ -100,14 +111,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
               color: Colors.black,
             ),
             onPressed: getData),
-        body: visionText == null
+        body: value.length == 0
             ? Center(
                 child: Text(
                   "Select a picture",
                   style: scannerStyle,
                 ),
               )
-            : ScannedItems(items: visionText, labels: label));
+            : ScannedItems(items: value, labels: label));
   }
 }
 

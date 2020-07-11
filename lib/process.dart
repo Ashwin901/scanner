@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:contacts_service/contacts_service.dart';
 
+
+
 class ScannedItems extends StatefulWidget {
   final items,labels;
   ScannedItems({this.items,this.labels});
@@ -14,14 +16,18 @@ class ScannedItems extends StatefulWidget {
 class _ScannedItemsState extends State<ScannedItems> {
   TextEditingController  fName;
   TextEditingController sName;
+  TextEditingController pNumber;
   Permission permission;
   Contact contact;
+  List value;
   @override
   void initState() {
     // TODO: implement initState
     fName = TextEditingController();
     sName = TextEditingController();
+    pNumber = TextEditingController();
     permission = Permission.contacts;
+    value=[];
     super.initState();
   }
 
@@ -91,6 +97,7 @@ class _ScannedItemsState extends State<ScannedItems> {
 
   //This function saves the contact.
   void addContacts(String phoneNumber) async {
+    pNumber.text = phoneNumber;
     var res = await permission.request();
     if (res.isGranted) {
       showDialog(
@@ -114,10 +121,11 @@ class _ScannedItemsState extends State<ScannedItems> {
                 controller: sName,
                 decoration: InputDecoration(labelText: "Last Name"),
               ),
-              Text(
-                "Phone Number :" + phoneNumber,
+              TextField(
+                controller: pNumber,
                 style: scannerStyle,
-              ),
+                decoration: InputDecoration(labelText: "Phone Number"),
+              )
             ],
           ),
           actions: <Widget>[
@@ -170,12 +178,14 @@ class _ScannedItemsState extends State<ScannedItems> {
   //This is the format in which the text will be displayed.
   @override
   Widget build(BuildContext context) {
-    final visionText = widget.items;
+    final items = widget.items;
     final label = widget.labels;
     return  Container(
-      child: ListView.builder(
+      child: items.length==0 ? CircularProgressIndicator(
+        backgroundColor: Theme.of(context).primaryColor,
+      ) :ListView.builder(
           shrinkWrap: true,
-          itemCount: visionText.blocks.length,
+          itemCount: items.length,
           itemBuilder: (context, index) {
             return GestureDetector(
                 child: Card(
@@ -185,14 +195,15 @@ class _ScannedItemsState extends State<ScannedItems> {
                       style: scannerStyle,
                     ),
                     title: Text(
-                      visionText.blocks[index].text.toLowerCase(),
+//                      visionText.blocks[index].text,
+                      items[index],
                       style: scannerStyle,
                     ),
                   ),
                 ),
                 onTap: () {
                   labelFunction(
-                      label[index], visionText.blocks[index].text);
+                      label[index], items[index]);
                 });
           }),
     );
