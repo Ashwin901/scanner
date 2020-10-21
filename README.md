@@ -6,11 +6,12 @@ This is a flutter application which uses firebase OCR technology to scan text fr
 
 When we start the application we have an opening screen where you can click a picture and if there is text in the image it is categorised into three categories phone number, url and others.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Packages:
+  cupertino_icons: ^0.1.3
+  image_picker: ^0.6.7+3
+  firebase_ml_vision: ^0.9.4
+  url_launcher: ^5.4.11
+  contacts_service: ^0.4.6
+  permission_handler: ^5.0.1+1
+  firebase_core: ^0.4.5
+  cloud_firestore: ^0.13.7
