@@ -1,10 +1,10 @@
-# getscanner
+# Scanner
 
-A new Flutter application.
+This is a flutter application which uses firebase OCR technology to scan text from images
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+When we start the application we have an opening screen where you can click a picture and if there is text in the image it is categorised into three categories phone number, url and others.
 
 A few resources to get you started if this is your first Flutter project:
 
