@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getscanner/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:getscanner/process.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class History extends StatefulWidget {
   @override
@@ -35,11 +36,9 @@ class _HistoryState extends State<History> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
        if(!snapshot.hasData) {
          return Center(
-           child: CircularProgressIndicator(
-             backgroundColor: Theme
-                 .of(context)
-                 .primaryColor,
-           ),
+           child: SpinKitDoubleBounce(
+             color: Theme.of(context).primaryColor,
+           )
          );
        }
        label.clear();
